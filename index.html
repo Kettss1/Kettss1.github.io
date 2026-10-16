@@ -460,12 +460,16 @@ function drawBg(dt) {
       const d = pointer.active ? Math.hypot(x - pointer.x, y - pointer.y) : 999;
       const k = d < R ? 1 - d / R : 0;
       if (k > 0) {
-        bctx.strokeStyle = colors.spark; bctx.globalAlpha = k * 0.3; bctx.lineWidth = 1;
+        bctx.strokeStyle = colors.spark; bctx.globalAlpha = k * k * 0.14; bctx.lineWidth = 1;
         bctx.beginPath(); bctx.moveTo(pointer.x, pointer.y); bctx.lineTo(x, y); bctx.stroke();
       }
-      bctx.globalAlpha = 0.55 + k * 0.45;
-      bctx.fillStyle = k > 0 ? colors.ink : colors.grid;
-      bctx.beginPath(); bctx.arc(x, y, 1.2 + k * 2, 0, 6.283); bctx.fill();
+      // every dot keeps its soft grid color; near the cursor it only grows a little and darkens gently
+      bctx.globalAlpha = 0.55; bctx.fillStyle = colors.grid;
+      bctx.beginPath(); bctx.arc(x, y, 1.2 + k * 0.9, 0, 6.283); bctx.fill();
+      if (k > 0) {
+        bctx.globalAlpha = k * 0.3; bctx.fillStyle = colors.ink;
+        bctx.beginPath(); bctx.arc(x, y, 1.2 + k * 0.9, 0, 6.283); bctx.fill();
+      }
     }
   }
   bctx.globalAlpha = 1;
