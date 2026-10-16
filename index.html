@@ -402,13 +402,16 @@ function drawBg(dt) {
   bctx.clearRect(0, 0, W, H);
   const off = scrollY % GAP;
   // vertical guides: solid lines at the content column edges, dashed ones every 5 dots
-  const colL = Math.round(Math.max(16, (W - 780) / 2)) + .5, colR = Math.round(W - Math.max(16, (W - 780) / 2)) - .5;
+  // guides sit a little outside the content column; skipped when the screen has no room for the gap
+  const edge = Math.max(16, (W - 780) / 2), GUTTER = 48;
+  const showGuides = edge - GUTTER >= 12;
+  const colL = Math.round(edge - GUTTER) + .5, colR = Math.round(W - edge + GUTTER) - .5;
   bctx.strokeStyle = colors.grid; bctx.lineWidth = 1; bctx.globalAlpha = .85;
-  bctx.beginPath(); bctx.moveTo(colL, 0); bctx.lineTo(colL, H); bctx.moveTo(colR, 0); bctx.lineTo(colR, H); bctx.stroke();
+  if (showGuides) { bctx.beginPath(); bctx.moveTo(colL, 0); bctx.lineTo(colL, H); bctx.moveTo(colR, 0); bctx.lineTo(colR, H); bctx.stroke(); }
   bctx.globalAlpha = .5; bctx.setLineDash([3, 7]); bctx.lineDashOffset = scrollY % 10;
   bctx.beginPath();
   for (let x = GAP * 5; x < W; x += GAP * 5) {
-    if (Math.abs(x - colL) < GAP / 2 || Math.abs(x - colR) < GAP / 2) continue;
+    if (x > colL - GAP && x < colR + GAP) continue;  // keep dashed guides out of the content area and its margin
     bctx.moveTo(x + .5, 0); bctx.lineTo(x + .5, H);
   }
   bctx.stroke(); bctx.setLineDash([]); bctx.globalAlpha = 1;
