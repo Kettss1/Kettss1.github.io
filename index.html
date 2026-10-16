@@ -411,8 +411,34 @@ setTimeout(blink, 2500); setTimeout(glance, rand(3500, 5000));
 $('#avatar').onclick = () => {
   override = 'front-closed'; show();
   setTimeout(() => { override = null; lastChange = performance.now(); show(); }, 900);
+  sparkleAvatar();
   unlock('wink');
 };
+/* little twinkling stars around the portrait's head when it's clicked */
+const sparkles = [];
+function sparkleAvatar() {
+  const r = $('#avatar').getBoundingClientRect();
+  const cx = r.left + r.width / 2, cy = r.top + r.height * .32;
+  for (let i = 0; i < 7; i++) {
+    const a = -Math.PI * (.05 + .9 * i / 6) + (Math.random() - .5) * .3;          // spread over the top half
+    const dist = r.width * (.36 + Math.random() * .14);
+    sparkles.push({ x: cx + Math.cos(a) * dist, y: cy + Math.sin(a) * dist * .9, t: -i * .05, life: .9 + Math.random() * .4,
+      s: 5 + Math.random() * 5, c: i % 3 === 1 ? 'ink' : 'marker', drift: -12 - Math.random() * 10 });
+  }
+}
+function drawSparkles(dt) {
+  for (let i = sparkles.length - 1; i >= 0; i--) {
+    const p = sparkles[i]; p.t += dt;
+    if (p.t > p.life) { sparkles.splice(i, 1); continue; }
+    if (p.t < 0) continue;
+    const k = p.t / p.life, size = p.s * Math.sin(Math.PI * k), y = p.y + p.drift * k;
+    fctx.save(); fctx.translate(p.x, y); fctx.rotate(k * .8);
+    fctx.globalAlpha = 1 - k * k; fctx.fillStyle = colors[p.c];
+    fctx.beginPath();   // four-point star
+    for (let j = 0; j < 8; j++) { const rr = j % 2 ? size * .28 : size, aa = j * Math.PI / 4; fctx.lineTo(Math.cos(aa) * rr, Math.sin(aa) * rr); }
+    fctx.closePath(); fctx.fill(); fctx.restore();
+  }
+}
 
 /* ---------- canvases ---------- */
 const bg = $('#bg'), bctx = bg.getContext('2d');
@@ -685,6 +711,7 @@ function loop(now) {
   fctx.clearRect(0, 0, W, H);
   drawCat(dt, now);
   drawParts(dt);
+  drawSparkles(dt);
   requestAnimationFrame(loop);
 }
 requestAnimationFrame(loop);
