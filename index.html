@@ -16,7 +16,7 @@
 /* Layout: one narrow column of "sketchbook" content floating over a live dot grid; pixel cat lives on the floor of the viewport. */
 :root{
   --bg:#E8DFCF; --paper:#F2EBDF; --ink:#1E1A16; --muted:#5E5547; --grid:#BFB29C; --rule:#D5C9B5;
-  --hl:rgba(255,200,40,.65); --marker:#D49A00; --blue:#2F49CF; --spark:#A5503F; --disc:#BFCDB0;
+  --hl:rgba(255,200,40,.65); --marker:#D49A00; --blue:#2F49CF; --spark:#1E1A16; --disc:#BFCDB0;
   color-scheme:light;
   --f-display:"Shantell Sans","Comic Neue","Segoe Print",cursive;
   --f-body:"Atkinson Hyperlegible",system-ui,-apple-system,sans-serif;
@@ -459,7 +459,7 @@ function drawBg(dt) {
       const d = pointer.active ? Math.hypot(x - pointer.x, y - pointer.y) : 999;
       const k = d < R ? 1 - d / R : 0;
       if (k > 0) {
-        bctx.strokeStyle = colors.spark; bctx.globalAlpha = k * 0.4; bctx.lineWidth = 1;
+        bctx.strokeStyle = colors.spark; bctx.globalAlpha = k * 0.3; bctx.lineWidth = 1;
         bctx.beginPath(); bctx.moveTo(pointer.x, pointer.y); bctx.lineTo(x, y); bctx.stroke();
       }
       bctx.globalAlpha = 0.55 + k * 0.45;
