@@ -16,7 +16,7 @@
 /* Layout: one narrow column of "sketchbook" content floating over a live dot grid; pixel cat lives on the floor of the viewport. */
 :root{
   --bg:#E8DFCF; --paper:#F2EBDF; --ink:#1E1A16; --muted:#5E5547; --grid:#BFB29C; --rule:#D5C9B5;
-  --hl:rgba(255,200,40,.65); --marker:#D49A00; --blue:#2F49CF; --disc:#BFCDB0;
+  --hl:rgba(255,200,40,.65); --marker:#D49A00; --blue:#2F49CF; --spark:#A5503F; --disc:#BFCDB0;
   color-scheme:light;
   --f-display:"Shantell Sans","Comic Neue","Segoe Print",cursive;
   --f-body:"Atkinson Hyperlegible",system-ui,-apple-system,sans-serif;
@@ -34,7 +34,7 @@ a{color:var(--blue);text-underline-offset:3px}
 :focus-visible{outline:2px dashed var(--blue);outline-offset:3px;border-radius:4px}
 :root[data-mode="dark"]{
   --bg:#14161D; --paper:#1C1F28; --ink:#E6E7ED; --muted:#9AA0B2; --grid:#363C4D; --rule:#2A2F3C;
-  --hl:rgba(242,183,5,.38); --marker:#F5C518; --blue:#93A3FF; --disc:#9FAF8E; color-scheme:dark}
+  --hl:rgba(242,183,5,.38); --marker:#F5C518; --blue:#93A3FF; --spark:#93A3FF; --disc:#9FAF8E; color-scheme:dark}
 .mono{font-family:var(--f-mono);font-size:13px;letter-spacing:.04em}
 
 .top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:22px 0}
@@ -277,7 +277,7 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const $ = s => document.querySelector(s);
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 let colors = {};
-const readColors = () => { colors = { grid: css('--grid'), ink: css('--ink'), marker: css('--marker'), blue: css('--blue'), rule: css('--rule') }; };
+const readColors = () => { colors = { grid: css('--grid'), ink: css('--ink'), marker: css('--marker'), blue: css('--blue'), spark: css('--spark'), rule: css('--rule') }; };
 readColors();
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', readColors);
 new MutationObserver(readColors).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'data-mode'] });
@@ -459,7 +459,7 @@ function drawBg(dt) {
       const d = pointer.active ? Math.hypot(x - pointer.x, y - pointer.y) : 999;
       const k = d < R ? 1 - d / R : 0;
       if (k > 0) {
-        bctx.strokeStyle = colors.blue; bctx.globalAlpha = k * 0.35; bctx.lineWidth = 1;
+        bctx.strokeStyle = colors.spark; bctx.globalAlpha = k * 0.4; bctx.lineWidth = 1;
         bctx.beginPath(); bctx.moveTo(pointer.x, pointer.y); bctx.lineTo(x, y); bctx.stroke();
       }
       bctx.globalAlpha = 0.55 + k * 0.45;
